@@ -1,15 +1,18 @@
-var url = "http://api.forismatic.com/api/1.0/?method=getQuote&key=457653&format=jsonp&lang=en&jsonp=?";
+var url = "https://quotesondesign.com/wp-json/posts?filter[orderby]=rand&filter[posts_per_page]=1&callback=";
 var getQuote = function(data) {
-  $("#quote-id").text(data.quoteText);
-  var quot = 'https://twitter.com/intent/tweet?text=' + data.quoteText + ' Author ' + data.quoteAuthor +' @jamezattard google.com';
-  if (data.quoteAuthor === '') {
-    data.quoteAuthor = 'Unknown';
+  //console.log(data);
+  var quoteText = $(data[0].content).text();
+  $("#quote-id").text(quoteText);
+  var quot = 'https://twitter.com/intent/tweet?text=' + quoteText + ' Author ' + data[0].title +' @jamezattard google.com';
+  if (data[0].title === '') {
+    data[0].title = 'Unknown';
   }
-  $("#author-id").text(' ' + data.quoteAuthor);
+  $("#author-id").text(' ' + data[0].title);
   $(".twitter-share-button").attr("href", quot);
 };
 $(document).ready(function() {
-  $.getJSON(url, getQuote, 'jsonp');
+  $.ajaxSetup({ cache: false });
+  $.getJSON(url, getQuote);
 });
 $("#quotebutton").click(function() {
   $.getJSON(url, getQuote, 'jsonp');
